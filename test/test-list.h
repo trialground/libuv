@@ -21,6 +21,7 @@
 
 #include "uv.h"
 
+TEST_DECLARE   (my_test)
 TEST_DECLARE   (platform_output)
 TEST_DECLARE   (callback_order)
 TEST_DECLARE   (close_order)
@@ -481,6 +482,7 @@ TASK_LIST_START
 #if 0
   TEST_ENTRY  (callback_order)
 #endif
+  TEST_ENTRY  (my_test)
   TEST_ENTRY  (close_order)
   TEST_ENTRY  (run_once)
   TEST_ENTRY  (run_nowait)

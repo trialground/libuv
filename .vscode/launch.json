@@ -10,8 +10,8 @@
             "request": "launch",
             "program": "${workspaceFolder}/out/Debug/run-tests",
             "args": [
-                "run_once",
-                "run_once"
+                "my_test",
+                "my_test"
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

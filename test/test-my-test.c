@@ -35,8 +35,7 @@ static void idle_cb(uv_idle_t* handle) {
     uv_idle_stop(handle);
 }
 
-
-TEST_IMPL(run_once) {
+TEST_IMPL(my_test) {
   uv_loop_t * loop = uv_default_loop();
   uv_idle_init(loop, &idle_handle);
   uv_idle_start(&idle_handle, idle_cb);
