@@ -22,30 +22,39 @@
 #include "uv.h"
 #include "task.h"
 
+#define ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]))
 #define NUM_TICKS 64
 
-static uv_idle_t idle_handle;
-static int idle_counter;
 
+int open_cb_count = 0;
+#define OUTPUT_SIZE 1024
+static char output[OUTPUT_SIZE];
 
-static void idle_cb(uv_idle_t* handle) {
-  ASSERT(handle == &idle_handle);
-
-  if (++idle_counter == NUM_TICKS)
-    uv_idle_stop(handle);
+void open_noent_cb(uv_fs_t* req) {
+  ASSERT(req->fs_type == UV_FS_OPEN);
+  open_cb_count++;
+  uv_buf_t buf;
+  buf = uv_buf_init(output, sizeof(output));
+  uv_fs_read(uv_default_loop(), req, req->result, &buf, 1, 0, NULL);
+  ASSERT(strcmp(buf.base, "## hello world") == 0);
 }
 
 TEST_IMPL(my_test) {
+  uv_fs_t req;
+  // uv_fs_t req2;
+  // uv_fs_t req3;
+  int r;
+
   uv_loop_t * loop = uv_default_loop();
-  uv_idle_init(loop, &idle_handle);
-  uv_idle_start(&idle_handle, idle_cb);
 
-  int isok;
-  while ((isok = uv_run(loop, UV_RUN_ONCE)));
+  r = uv_fs_open(loop, &req, "doc.md", O_RDONLY, 0, open_noent_cb);
+  ASSERT(r == 0);
 
-  printf("isok %d", isok);
 
-  ASSERT(idle_counter == NUM_TICKS);
+  ASSERT(open_cb_count == 0);
+  uv_run(loop, UV_RUN_DEFAULT);
+  ASSERT(open_cb_count == 1);
+  /* TODO add EACCES test */
 
   MAKE_VALGRIND_HAPPY();
   return 0;
