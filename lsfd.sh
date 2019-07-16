@@ -1,0 +1,1 @@
+lsof -p$(ps -ef | grep tests | grep -v grep | awk '{print $2}')

@@ -1325,8 +1325,10 @@ static void uv__stream_io(uv_loop_t* loop, uv__io_t* w, unsigned int events) {
     uv__write_callbacks(stream);
 
     /* Write queue drained. */
-    if (QUEUE_EMPTY(&stream->write_queue))
+    if (QUEUE_EMPTY(&stream->write_queue)) {
+      printf("want close");
       uv__drain(stream);
+    }
   }
 }
 
